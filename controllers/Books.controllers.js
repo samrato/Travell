@@ -53,6 +53,35 @@ const AddStory=async(req,res)=>{
        return res.status(500).json({message:"Internal server error"})
     }
 }
+// get all stories 
+const GetStory=async(req,res)=>{
+
+    try {
+        // paginations =>The infinite loading 
+        const page=req.query.page||1
+        const limit=req.query.limit||5
+        const skip=(page-1)*limit
+        const story = await Book.find()
+        .sort({createdAt:-1})
+        .skip(skip)
+        .limit(limit)
+        .populate("user","name ProfileImage")
+
+        const total =await Book.countDocuments()
+    return res.status(200).json({
+        story,
+        currentPage:page,
+        totalStory:total,
+        totalPages:Math.ceil(totalStory/limit)
+
+
+    });
+
+    } catch (error) {
+       console.error("error in getting all stories",error) 
+       return res.status(500).json({message:"Internal server error"})
+    }
+}
 
 
 
@@ -64,6 +93,7 @@ const DeleteStory=async(req,res)=>{
         
     } catch (error) {
        console.error(error) 
+       return res.status(500).json({message:"Internal server error"})
     }
 }
 
@@ -75,5 +105,6 @@ const UpdateStory=async(req,res)=>{
         
     } catch (error) {
        console.error(error) 
+       return res.status(500).json({message:"Internal server error"})
     }
 }
