@@ -90,7 +90,15 @@ const GetStory=async(req,res)=>{
 const DeleteStory=async(req,res)=>{
 
     try {
-        
+        const { id } = req.params;
+              const userId = req.user.id;
+      
+              console.log("Requested Blog ID:", id);
+              console.log("User ID from token:", userId);
+
+              const book = await Book.findById(id);
+              console.log("Found Blog:", book);
+
     } catch (error) {
        console.error(error) 
        return res.status(500).json({message:"Internal server error"})
