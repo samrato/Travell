@@ -98,8 +98,30 @@ const DeleteStory=async(req,res)=>{
 
               const book = await Book.findById(id);
               console.log("Found Blog:", book);
+              if(!book){
+                return res.status(500).json({message:"The story is not foun"})
+              }
+              console.log("Blog Author:", book.user);
+              if (!book.user) {
+                return res.status(400).json({ message: "story does not have an associated Author" });
+            }
+            if (book.user.toString() !== userId) {
+                return res.status(403).json({ message: "You are not authorized to delete this story" });
+            }
+// delete the iimage in cloudinary
+                  if(book.image && book.image.includes("cloudinary")){
+                    try {
+                        
+                    } catch (deleteErro) {
+                        console.log("error in deleting image.",deleteErro)
+                    }
+                  }
 
-    } catch (error) {
+            await book.deleteOne();
+            res.status(200).json({ message: "Blog deleted successfully" });
+    
+
+    } catch (error) { 
        console.error(error) 
        return res.status(500).json({message:"Internal server error"})
     }
@@ -110,7 +132,28 @@ const DeleteStory=async(req,res)=>{
 const UpdateStory=async(req,res)=>{
 
     try {
-        
+        const { id } = req.params;
+        const { title, caption, image ,rating } = req.body;
+        if (!title || !caption ||rating) {
+            return res.status(422).json({message:"fill in all fields "})
+        }
+        const book = await Book.findById(id);
+          if (!book) {
+              return res.status(404).json({ message: "story not found" });
+          }
+          if (book.user.toString() !== req.user.id) {
+            return res.status(403).json({ message: "You are not authorized to update this blog" });
+        }
+
+        const updatedBook = await Book.findByIdAndUpdate(
+            id,
+            { title, caption,rating, image },
+            { new: true }
+        );
+
+        res.status(200).json({ message: "Blog updated successfully", updatedBook });
+  
+
     } catch (error) {
        console.error(error) 
        return res.status(500).json({message:"Internal server error"})
