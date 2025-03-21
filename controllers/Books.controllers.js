@@ -111,7 +111,8 @@ const DeleteStory=async(req,res)=>{
 // delete the iimage in cloudinary
                   if(book.image && book.image.includes("cloudinary")){
                     try {
-                        
+                        const publicId=book.image.split("/").pop().split(".")[0]
+                        await cloudinary.uploader.destroy(publicId)
                     } catch (deleteErro) {
                         console.log("error in deleting image.",deleteErro)
                     }
@@ -159,3 +160,18 @@ const UpdateStory=async(req,res)=>{
        return res.status(500).json({message:"Internal server error"})
     }
 }
+
+
+// get books  story nfor the specific user logged in 
+
+const GetUserBook=async()=>{
+    try {
+        const books=await Book .find({user:req.user._id}).sort({createdAt:-1})
+        return res.status(200).json(books)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({message:"Internal sercver error"})
+    }
+}
+
+module.exports={GetStory,AddStory,DeleteStory,UpdateStory,GetUserBook}
