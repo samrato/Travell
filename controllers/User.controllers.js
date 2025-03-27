@@ -71,7 +71,8 @@ const LoginUser=async(req,res)=>{
             userId: user._id ,
             name:user.name,
             email:user.email,
-            ProfileImage:user.ProfileImage
+            ProfileImage:user.ProfileImage,
+            createdAt:user.createdAt
         }});
     } catch (error) {
         console.error(error)
