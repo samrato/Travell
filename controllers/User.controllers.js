@@ -5,7 +5,6 @@ const RegisterUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Validate required fields
         if (!name || !email || !password) {
             return res.status(422).json({ message: "All fields are required" });
         }
@@ -16,25 +15,30 @@ const RegisterUser = async (req, res) => {
             return res.status(422).json({ message: "Password should be at least 6 characters" });
         }
 
-        // Check if user with the same email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
-        // Hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Generate avatar URL (Optional)
         const ProfileImage = `https://api.dicebear.com/9.x/avataaar/svg?seed=${name}`;
 
-        // Create the new user
         const newUser = await User.create({ name, email, password: hashedPassword, ProfileImage });
 
-        console.log(newUser);
-        return res.status(201).json({ message: "User registered successfully" });
+        // Generate JWT token
+        const token = generateToken({ id: newUser._id });
 
+        return res.status(201).json({
+            token,
+            user: {
+                userId: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                ProfileImage: newUser.ProfileImage,
+                createdAt: newUser.createdAt,
+            }
+        });
     } catch (error) {
         console.error("Registration error", error);
         return res.status(500).json({ message: "User registration failed" });
