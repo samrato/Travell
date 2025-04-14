@@ -4,55 +4,73 @@ const { v4: uuid } = require("uuid");
 const cloudinary=require("../utils/cloudinary")
 
 // create a story
-const AddStory=async(req,res)=>{
-    try {
-        const{title,caption ,rating}=req.body
-        if(!title ||!caption  ||!rating){
-            return res.status(422).json({message:"All field are required "})
-        }
-        // upload image to cloudinary 
-        if(req.files.image){
-            return res.status(422).json({message:"Choose an Image"})}
-         const{image}=req.files;
-         if (image.size > 1000000) {
-            return res.status(403).json({message:"File size is so big"})}
-            
-            let fileName = image.name;
+const AddStory = async (req, res) => {
+  try {
+    const { title, caption, rating } = req.body;
+
+    if (!title || !caption || !rating) {
+      return res.status(422).json({ message: "All fields are required" });
+    }
+
+    // Check if files are uploaded
+    if (!req.files || !req.files.image) {
+      return res.status(422).json({ message: "Choose an Image" });
+    }
+
+    const { image } = req.files;
+
+    // Validate image size (limit to 1MB)
+    if (image.size > 1000000) {
+      return res.status(403).json({ message: "File size is too big" });
+    }
+
+    // Prepare image file name
+    let fileName = image.name;
     fileName = fileName.split(".");
     fileName = fileName[0] + uuid() + "." + fileName[fileName.length - 1];
-    // upload files to upload folder
-    await image.mv(
-      path.join(__dirname, "..", "uploads", fileName),
-      async (err) => {
-        if (err) {
-            console.error(err)
-          return res.status(422).json({message:"Image failed"})
-        }
-        // store image on cloudinary
+
+    // Move the file to the 'uploads' directory
+    await image.mv(path.join(__dirname, "..", "uploads", fileName), async (err) => {
+      if (err) {
+        console.error("Error moving file:", err);
+        return res.status(422).json({ message: "Image upload failed" });
+      }
+
+      // Upload the file to Cloudinary
+      try {
         const result = await cloudinary.uploader.upload(
           path.join(__dirname, "..", "uploads", fileName),
           { resource_type: "image" }
         );
+
         if (!result.secure_url) {
-            return res.status(422).json({message:"Could not upload the image"})
+          return res.status(422).json({ message: "Could not upload the image" });
         }
-        // if succs saves the election to Db
-        const newBook= await Book.create({
+
+        // Remove the local file after uploading to Cloudinary to avoid residual files
+        await FileSystem.unlink(path.join(__dirname, "..", "uploads", fileName));
+
+        // Save story details in the database
+        const newBook = await Book.create({
           title,
           caption,
           rating,
           image: result.secure_url,
-          user:req.user._id
+          user: req.user._id,
         });
+
         return res.status(201).json(newBook);
+      } catch (cloudinaryError) {
+        console.error("Error uploading to Cloudinary:", cloudinaryError);
+        return res.status(500).json({ message: "Image upload failed" });
       }
-    );
-        // save to DB
-    } catch (error) {
-       console.error("Error Uploading story",error) 
-       return res.status(500).json({message:"Internal server error"})
-    }
-}
+    });
+  } catch (error) {
+    console.error("Error uploading story:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // get all stories 
 const GetStory=async(req,res)=>{
 
