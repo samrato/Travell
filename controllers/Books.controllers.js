@@ -4,6 +4,12 @@ const { v4: uuid } = require("uuid");
 const cloudinary=require("../utils/cloudinary")
 
 // create a story
+const fs = require('fs');
+const { v4: uuid } = require('uuid'); // Ensure uuid is imported correctly
+const path = require('path');
+const cloudinary = require('cloudinary').v2; // Make sure Cloudinary is initialized
+const Book = require('../models/Book'); // Assuming this is your model
+
 const AddStory = async (req, res) => {
   try {
     const { title, caption, rating } = req.body;
@@ -21,7 +27,7 @@ const AddStory = async (req, res) => {
 
     // Validate image size (limit to 1MB)
     if (image.size > 1000000) {
-      return res.status(403).json({ message: "File size is too big" });
+      return res.status(422).json({ message: "File size is too big" });
     }
 
     // Prepare image file name
@@ -48,7 +54,11 @@ const AddStory = async (req, res) => {
         }
 
         // Remove the local file after uploading to Cloudinary to avoid residual files
-        await FileSystem.unlink(path.join(__dirname, "..", "uploads", fileName));
+        fs.unlink(path.join(__dirname, "..", "uploads", fileName), (err) => {
+          if (err) {
+            console.error("Error removing file after upload:", err);
+          }
+        });
 
         // Save story details in the database
         const newBook = await Book.create({
@@ -70,6 +80,7 @@ const AddStory = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // get all stories 
 const GetStory=async(req,res)=>{
