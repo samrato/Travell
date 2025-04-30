@@ -75,7 +75,7 @@ const LoginUser=async(req,res)=>{
 
       return res.status(200).json({ token,user:{
             userId: user._id ,
-            name:user.name,
+            name:user.username,
             email:user.email,
             ProfileImage:user.ProfileImage,
             createdAt:user.createdAt
