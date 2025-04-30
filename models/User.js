@@ -1,8 +1,9 @@
 const mongoose=require('mongoose')
 const UserSchema=new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: [true, "Name is required"], 
+        unique:true,
         trim: true,
         minlength: [3, "Name must be at least 3 characters"],
         maxlength: [50, "Name cannot exceed 50 characters"]
@@ -13,7 +14,7 @@ const UserSchema=new mongoose.Schema({
         unique: true, 
         trim: true,
         lowercase: true,
-        match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
+        
     },
     password: {
         type: String,
