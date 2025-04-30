@@ -3,12 +3,12 @@ const bcrypt=require('bcryptjs')
 const jwt =require('jsonwebtoken')
 const RegisterUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { username, email, password } = req.body;
 
-        if (!name || !email || !password) {
+        if (!username || !email || !password) {
             return res.status(422).json({ message: "All fields are required" });
         }
-        if (name.length < 3) {
+        if (username.length < 3) {
             return res.status(422).json({ message: "Username should be at least 3 characters long" });
         }
         if (password.trim().length < 6) {
@@ -22,9 +22,9 @@ const RegisterUser = async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const ProfileImage = `https://api.dicebear.com/9.x/avataaar/svg?seed=${name}`;
+        const ProfileImage = `https://api.dicebear.com/9.x/avataaar/svg?seed=${username}`;
 
-        const newUser = await User.create({ name, email, password: hashedPassword, ProfileImage });
+        const newUser = await User.create({ username, email, password: hashedPassword, ProfileImage });
 
         // Generate JWT token
         const token = generateToken({ id: newUser._id });
