@@ -7,7 +7,7 @@ const app = express();
 dotenv.config();
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:8081", "exp://192.168.180.121:8081"];
+const allowedOrigins =["http://localhost:8081", "exp://192.168.180.121:8081"];
 
 app.use(
   cors({
