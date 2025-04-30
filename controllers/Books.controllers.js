@@ -1,12 +1,10 @@
 
-
-
 // create a story
 const fs = require('fs');
 const { v4: uuid } = require('uuid'); // Ensure uuid is imported correctly
 const path = require('path');
 const cloudinary = require('cloudinary').v2; // Make sure Cloudinary is initialized
-const Book = require('../models/Story'); // Assuming this is your model
+const Book = require('../models/Book'); // Assuming this is your model
 
 const AddStory = async (req, res) => {
   try {
