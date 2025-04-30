@@ -7,6 +7,7 @@ const {
   UpdateStory,
   GetUserBook,
 } = require("../controllers/Books.controllers");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const routes = Router();
 // the login and registrations routes
@@ -14,8 +15,11 @@ const routes = Router();
 routes.post("/register", RegisterUser);
 routes.post("/login", LoginUser);
 // the routes are updated
-routes.get("/story", GetStory);
-routes.post("/story", AddStory);
+routes.get("/books",authMiddleware, GetStory);
+
+// create a post
+routes.post("/books", authMiddleware, AddStory);
+
 routes.delete("/story/:id", DeleteStory);
 routes.get("/story/:id", GetUserBook);
 routes.patch("/story/:id", UpdateStory);
