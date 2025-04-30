@@ -1,9 +1,10 @@
 const User=require("../models/User")
 const bcrypt=require('bcryptjs')
 const jwt =require('jsonwebtoken')
+
 const RegisterUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { username, email, password } = req.body;
 
         if (!name || !email || !password) {
             return res.status(422).json({ message: "All fields are required" });
