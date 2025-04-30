@@ -23,9 +23,9 @@ const RegisterUser = async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const ProfileImage = `https://api.dicebear.com/9.x/avataaar/svg?seed=${name}`;
+        const ProfileImage = `https://api.dicebear.com/9.x/avataaar/svg?seed=${username}`;
 
-        const newUser = await User.create({ name, email, password: hashedPassword, ProfileImage });
+        const newUser = await User.create({ username, email, password: hashedPassword, ProfileImage });
 
         // Generate JWT token
         const token = generateToken({ id: newUser._id });
