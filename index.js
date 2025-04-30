@@ -19,7 +19,7 @@ app.use(
         callback(new Error("CORS Policy Violation: Access Denied"));
       }
     },
-    credentials: true, // Allows cookies and credentials to be sent
+    credentials: true, // Allows cookies and creden
   })
 );
 
