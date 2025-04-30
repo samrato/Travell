@@ -9,7 +9,7 @@ const RegisterUser = async (req, res) => {
         if (!username || !email || !password) {
             return res.status(422).json({ message: "All fields are required" });
         }
-        if (name.length < 3) {
+        if (username.length < 3) {
             return res.status(422).json({ message: "Username should be at least 3 characters long" });
         }
         if (password.trim().length < 6) {
