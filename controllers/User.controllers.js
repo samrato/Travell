@@ -33,7 +33,7 @@ const RegisterUser = async (req, res) => {
             token,
             user: {
                 userId: newUser._id,
-                name: newUser.name,
+                username: newUser.username,
                 email: newUser.email,
                 ProfileImage: newUser.ProfileImage,
                 createdAt: newUser.createdAt,
@@ -45,8 +45,8 @@ const RegisterUser = async (req, res) => {
     }
 };
 
-const generateToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
+const generateToken = (userId) => {
+    return jwt.sign(userId, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
 
