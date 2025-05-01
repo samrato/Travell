@@ -96,7 +96,7 @@ const AddStory = async (req, res) => {
 };
 
 // get all the boooks
-// get all stories this is done with pagetions nd a query is needed 
+// get all stories this is done with pagetions nd a query is needed
 const GetStory = async (req, res) => {
   try {
     // paginations =>The infinite loading
@@ -125,44 +125,58 @@ const GetStory = async (req, res) => {
 //delete story // specific id
 const DeleteStory = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
-
-    console.log("Requested Blog ID:", id);
-    console.log("User ID from token:", userId);
-
-    const book = await Book.findById(id);
-    console.log("Found Blog:", book);
-    if (!book) {
-      return res.status(500).json({ message: "The story is not foun" });
-    }
-    console.log("Blog Author:", book.user);
-    if (!book.user) {
-      return res
-        .status(400)
-        .json({ message: "story does not have an associated Author" });
-    }
-    if (book.user.toString() !== userId) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to delete this story" });
-    }
-    // delete the iimage in cloudinary
-    if (book.image && book.image.includes("cloudinary")) {
-      try {
-        const publicId = book.image.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(publicId);
-      } catch (deleteErro) {
-        console.log("error in deleting image.", deleteErro);
-      }
-    }
-
-    await book.deleteOne();
-    res.status(200).json({ message: "Blog deleted successfully" });
+    const book = await Book.findById(req.params.id);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    
   }
+
+
+
+
+
+
+
+  // try {
+  //   const book = await Book.findById(req.params.id);
+
+  //   const { id } = req.params;
+  //   const userId = req.user.id;
+
+  //   console.log("Requested Blog ID:", id);
+  //   console.log("User ID from token:", userId);
+
+  //   const book = await Book.findById(id);
+  //   console.log("Found Blog:", book);
+  //   if (!book) {
+  //     return res.status(500).json({ message: "The story is not foun" });
+  //   }
+  //   console.log("Blog Author:", book.user);
+  //   if (!book.user) {
+  //     return res
+  //       .status(400)
+  //       .json({ message: "story does not have an associated Author" });
+  //   }
+  //   if (book.user.toString() !== userId) {
+  //     return res
+  //       .status(403)
+  //       .json({ message: "You are not authorized to delete this story" });
+  //   }
+  //   // delete the iimage in cloudinary
+  //   if (book.image && book.image.includes("cloudinary")) {
+  //     try {
+  //       const publicId = book.image.split("/").pop().split(".")[0];
+  //       await cloudinary.uploader.destroy(publicId);
+  //     } catch (deleteErro) {
+  //       console.log("error in deleting image.", deleteErro);
+  //     }
+  //   }
+
+  //   await book.deleteOne();
+  //   res.status(200).json({ message: "Blog deleted successfully" });
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).json({ message: "Internal server error" });
+  // }
 };
 
 //update a story specific id
