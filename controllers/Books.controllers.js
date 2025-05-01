@@ -126,6 +126,8 @@ const GetStory = async (req, res) => {
 const DeleteStory = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
+
+    
   } catch (error) {
     
   }
