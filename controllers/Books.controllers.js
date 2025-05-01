@@ -95,9 +95,8 @@ const AddStory = async (req, res) => {
   }
 };
 
-
-// get all the boooks 
-// get all stories
+// get all the boooks
+// get all stories this is done with pagetions nd a query is needed 
 const GetStory = async (req, res) => {
   try {
     // paginations =>The infinite loading
@@ -108,25 +107,21 @@ const GetStory = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("user", "name ProfileImage");
+      .populate("user", "username ProfileImage");
 
     const total = await Book.countDocuments();
     return res.status(200).json({
       books,
       currentPage: page,
-      totalStory: total,
-      totalPages: Math.ceil(totalStory / limit),
+      totalBooks: total,
+      totalPages: Math.ceil(totalBooks / limit),
     });
   } catch (error) {
     console.error("error in getting all stories", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
-
-
-
+// The delete of books thats also needed
 //delete story // specific id
 const DeleteStory = async (req, res) => {
   try {

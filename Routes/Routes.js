@@ -15,12 +15,12 @@ const routes = Router();
 routes.post("/register", RegisterUser);
 routes.post("/login", LoginUser);
 // the routes are updated
-routes.get("/books",authMiddleware, GetStory);
-
+routes.get("/books", authMiddleware, GetStory);
 // create a post
 routes.post("/books", authMiddleware, AddStory);
+// Delete a poooks
+routes.delete("/books/:id", authMiddleware, DeleteStory);
 
-routes.delete("/story/:id", DeleteStory);
 routes.get("/story/:id", GetUserBook);
 routes.patch("/story/:id", UpdateStory);
 
