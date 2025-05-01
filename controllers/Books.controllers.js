@@ -104,7 +104,7 @@ const GetStory = async (req, res) => {
     const page = req.query.page || 1;
     const limit = req.query.limit || 5;
     const skip = (page - 1) * limit;
-    const story = await Book.find()
+    const books = await Book.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -112,7 +112,7 @@ const GetStory = async (req, res) => {
 
     const total = await Book.countDocuments();
     return res.status(200).json({
-      story,
+      books,
       currentPage: page,
       totalStory: total,
       totalPages: Math.ceil(totalStory / limit),
