@@ -36,7 +36,7 @@ This is the backend API built with **Node.js**, **Express.js**, and **MongoDB**,
 
 | Method | URL                 | Description           |
 |--------|----------------------|-----------------------|
-| GET    | `/api/books`         | Fetch all books       |
-| POST   | `/api/books`         | Add a new book        |
-| DELETE | `/api/books/:id`     | Delete a book by ID   |
+| GET    | `/api/story`         | Fetch all story      |
+| POST   | `/api/story`         | Add a new story        |
+| DELETE | `/api/story/:id`     | Delete a story by ID   |
 
