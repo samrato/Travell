@@ -126,17 +126,30 @@ const GetStory = async (req, res) => {
 const DeleteStory = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(500).json({ message: "The story is not found" });
+    }
+    // check if the user is the owner of the book
+    if (book.user.toString() !== req.user_id.toString()) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    // delete the image  from the cloudinary
 
-    
+    if (book.image && book.image.includes("cloudinary")) {
+      try {
+        const publicId = book.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (deleteErro) {
+        console.log("error in deleting image.", deleteErro);
+      }
+    }
+
+    await book.deleteOne();
+    res.status(200).json({ message: "Blog deleted successfully" });
   } catch (error) {
-    
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-
-
-
-
-
 
   // try {
   //   const book = await Book.findById(req.params.id);
@@ -180,7 +193,7 @@ const DeleteStory = async (req, res) => {
   //   return res.status(500).json({ message: "Internal server error" });
   // }
 };
-
+// not nedded for sahiii cause no upadations is gooing to be done
 //update a story specific id
 const UpdateStory = async (req, res) => {
   try {
@@ -213,6 +226,7 @@ const UpdateStory = async (req, res) => {
 };
 
 // get books  story nfor the specific user logged in
+// this one also is needed for frotrnd
 
 const GetUserBook = async () => {
   try {
