@@ -27,3 +27,16 @@ This is the backend API built with **Node.js**, **Express.js**, and **MongoDB**,
 
 ## 📂 Folder Structure
 
+
+
+
+---
+
+## 📡 API Endpoints
+
+| Method | URL                 | Description           |
+|--------|----------------------|-----------------------|
+| GET    | `/api/books`         | Fetch all books       |
+| POST   | `/api/books`         | Add a new book        |
+| DELETE | `/api/books/:id`     | Delete a book by ID   |
+
